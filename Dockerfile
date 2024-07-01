@@ -1,9 +1,16 @@
-FROM rust:1.60.0 AS build-stage
-RUN USER=root cargo new --bin basics
-COPY ./ /basics
-RUN cargo build --release
+FROM rust:1.43.1 as build
 
-FROM debian:bullseye-slim AS production
-COPY --from=build-stage /basics/target/release/basics .
-COPY --from=build-stage /basics/static/ /static
-CMD ["./basics"]
+RUN apt-get update
+RUN apt-get install musl-tools -y
+RUN rustup target add x86_64-unknown-linux-musl
+
+WORKDIR /usr/src/api-service
+COPY . .
+
+RUN RUSTFLAGS=-Clinker=musl-gcc cargo install -—release —target=x86_64-unknown-linux-musl
+
+FROM alpine:latest
+
+COPY --from=build /usr/local/cargo/bin/api-service /usr/local/bin/api-service
+
+CMD ["api-service"]
