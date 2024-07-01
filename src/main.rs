@@ -1,4 +1,3 @@
-use std::env;
 use std::net::Ipv4Addr;
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use tera::{Context, Tera};
@@ -31,11 +30,6 @@ async fn manual_hello() -> impl Responder {
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    let port_key = "PORT";
-    let port: u16 = match env::var(port_key) {
-        Ok(val) => val.parse().expect("Custom Handler port is not a number!"),
-        Err(_) => 8080,
-    };
 
     HttpServer::new(|| {
         App::new()
@@ -43,7 +37,7 @@ async fn main() -> std::io::Result<()> {
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })
-    .bind((Ipv4Addr::UNSPECIFIED, port))?
+    .bind((Ipv4Addr::UNSPECIFIED, 5807))?
     .run()
     .await
 }
