@@ -11,6 +11,6 @@ FROM gcr.io/distroless/cc-debian10
 COPY --from=build /usr/local/cargo/bin/htmx-in-rust /usr/local/bin/htmx-in-rust
 
 ENV PORT 80
-# EXPOSE 80
+EXPOSE 80
 
 CMD ["htmx-in-rust"]
