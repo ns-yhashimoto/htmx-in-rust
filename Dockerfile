@@ -1,15 +1,12 @@
-FROM rust:1.43.1 as build
-
-RUN apt-get update
-RUN apt-get install musl-tools -y
-RUN rustup target add x86_64-unknown-linux-musl
+FROM rust:1.60.0 as build
+ENV PKG_CONFIG_ALLOW_CROSS=1
 
 WORKDIR /usr/src/api-service
 COPY . .
 
-RUN RUSTFLAGS=-Clinker=musl-gcc cargo install -—release —target=x86_64-unknown-linux-musl
+RUN cargo install --path .
 
-FROM alpine:latest
+FROM gcr.io/distroless/cc-debian10
 
 COPY --from=build /usr/local/cargo/bin/api-service /usr/local/bin/api-service
 
