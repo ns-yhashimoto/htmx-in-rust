@@ -1,5 +1,6 @@
 FROM rust:1.78.0 as build
 ENV PKG_CONFIG_ALLOW_CROSS=1
+ENV PORT 80
 
 WORKDIR /usr/src/htmx-in-rust
 COPY . .
