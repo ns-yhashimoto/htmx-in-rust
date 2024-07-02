@@ -37,7 +37,7 @@ async fn main() -> std::io::Result<()> {
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
     })
-    .bind((Ipv4Addr::UNSPECIFIED, 8608))?
+    .bind((Ipv4Addr::UNSPECIFIED, 8080))?
     .run()
     .await
 }
