@@ -4,6 +4,11 @@ use tera::Tera;
 
 mod controller {
     pub mod root;
+    pub mod order;
+}
+
+mod model {
+    pub mod order;
 }
 
 mod view {
@@ -17,6 +22,7 @@ pub async fn run_server() -> std::io::Result<()> {
         App::new()
             .app_data(web::Data::new(tera))
             .service(controller::root::hello)
+            .service(controller::order::order)
     })
     .bind((Ipv4Addr::UNSPECIFIED, 8080))?
     .run()

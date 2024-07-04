@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>受注番号</th>
+            <th>ステータス</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for order in orders %}
+        <tr id="order_{{ order.order_id }}">
+            <td>{{ order.order_id }}</td>
+            <td>{{ order.status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
