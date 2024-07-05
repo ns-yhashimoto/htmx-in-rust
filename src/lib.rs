@@ -21,8 +21,8 @@ pub async fn run_server() -> std::io::Result<()> {
 
         App::new()
             .app_data(web::Data::new(tera))
-            .service(controller::root::hello)
-            .service(controller::order::order)
+            .service(controller::root::index)
+            .service(controller::order::index)
     })
     .bind((Ipv4Addr::UNSPECIFIED, 8080))?
     .run()

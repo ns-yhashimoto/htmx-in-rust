@@ -1,12 +1,13 @@
 use tera::Tera;
 use actix_web::{get, web, HttpResponse, Responder};
-use crate::{model::order::get_order_balance_list, view::html};
+use crate::view::html;
+use crate::model::order;
 
 #[get("/order")]
-async fn order(tera: web::Data<Tera>) -> impl Responder {
-    let orders = get_order_balance_list();
+async fn index(tera: web::Data<Tera>) -> impl Responder {
+    let orders = order::get_order_balance_list();
 
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::render_order_page(&tera, &orders))
+        .body(html::order::render_index_page(&tera, &orders))
 }
