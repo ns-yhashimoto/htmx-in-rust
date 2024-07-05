@@ -14,4 +14,10 @@ pub mod order {
         ctx.insert("orders", orders);
         tera.render("order/index.html", &ctx).unwrap()
     }
+    
+    pub fn render_order_rows(tera: &Tera, orders: &Vec<OrderBalance<'static>>) -> String {
+        let mut ctx = Context::new();
+        ctx.insert("orders", orders);
+        tera.render("order/rows.html", &ctx).unwrap()
+    }
 }

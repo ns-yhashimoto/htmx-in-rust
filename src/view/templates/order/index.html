@@ -1,20 +1,28 @@
 {% extends 'layout.html' %}
 {% block content %}
-<table>
+<div class="flex end">
+    <label>
+        ステータス
+        <select
+            type="search" 
+            name="status"
+            hx-get="/order/search"
+            hx-target="#order-row-wrapper">
+            <option />
+            <option>引き当て済み</option>
+            <option>未回答</option>
+        </select>
+    </label>
+</div>
+<table id="order-table">
     <thead>
         <tr>
             <th>受注番号</th>
             <th>ステータス</th>
         </tr>
     </thead>
-    <tbody>
-        {% for order in orders %}
-        <tr id="order_{{ order.order_id }}">
-            <td>{{ order.order_id }}</td>
-            <td>{{ order.status }}</td>
-        </tr>
-        {% endfor %}
+    <tbody id="order-row-wrapper">
+        {% include "order/rows.html" %}
     </tbody>
 </table>
-
 {% endblock %}
