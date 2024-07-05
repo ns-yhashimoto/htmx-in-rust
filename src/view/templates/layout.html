@@ -1,3 +1,15 @@
+{% macro anchor(label, path) %}
+  {% if path == page %}
+    <li class="selected">
+      <a href="{{ path }}" aria-current="path">{{ label }}</a>
+    </li>
+  {% endif %}
+  {% if path != page %}
+    <li>
+      <a href="{{ path }}">{{ label }}</a>
+    </li>
+  {% endif %}
+{% endmacro %}
 <!doctype html>
 <html lang="ja">
   <head>
@@ -16,12 +28,8 @@
     <header>
       <nav>
         <menu>
-            <li>
-                <a href="/">Home</a>
-            </li>
-            <li>
-                <a href="/order">Order</a>
-            </li>
+          {{ self::anchor(label='Home', path='/') }}
+          {{ self::anchor(label='受注', path='/order') }}
         </menu>
       </nav>
     </header>
