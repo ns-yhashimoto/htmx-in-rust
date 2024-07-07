@@ -1,6 +1,7 @@
-use htmx_in_rust;
+use actix_web::web::ServiceConfig;
+use shuttle_actix_web::ShuttleActixWeb;
 
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    htmx_in_rust::run_server().await
+#[shuttle_runtime::main]
+async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+    htmx_in_rust::run_server()
 }

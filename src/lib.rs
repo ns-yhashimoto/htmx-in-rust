@@ -1,5 +1,5 @@
-use std::net::Ipv4Addr;
-use actix_web::{App, HttpServer};
+use actix_web::web::ServiceConfig;
+use shuttle_actix_web::ShuttleActixWeb;
 
 mod controller {
     pub mod root;
@@ -14,14 +14,12 @@ mod view {
     pub mod html;
 }
 
-pub async fn run_server() -> std::io::Result<()> {
-    HttpServer::new(|| {
-        App::new()
-            .service(controller::root::index)
-            .service(controller::order::index)
-            .service(controller::order::search)
-    })
-    .bind((Ipv4Addr::UNSPECIFIED, 8080))?
-    .run()
-    .await
+pub fn run_server() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+    let config = move |cfg: &mut ServiceConfig| {
+        cfg.service(controller::root::index);
+        cfg.service(controller::order::index);
+        cfg.service(controller::order::search);
+    };
+
+    Ok(config.into())
 }

@@ -7,3 +7,5 @@ edition = "2021"
 actix-web = "4"
 tera = "1"
 serde = { version = "1.0", features = ["derive"] }
+shuttle-actix-web = "0.46.0"
+shuttle-runtime = "0.46.0"
