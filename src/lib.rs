@@ -1,6 +1,5 @@
 use std::net::Ipv4Addr;
-use actix_web::{web, App, HttpServer};
-use tera::Tera;
+use actix_web::{App, HttpServer};
 
 mod controller {
     pub mod root;
@@ -17,10 +16,7 @@ mod view {
 
 pub async fn run_server() -> std::io::Result<()> {
     HttpServer::new(|| {
-        let tera = Tera::new("src/view/templates/**/*.html").unwrap();
-
         App::new()
-            .app_data(web::Data::new(tera))
             .service(controller::root::index)
             .service(controller::order::index)
             .service(controller::order::search)
