@@ -1,5 +1,6 @@
-use actix_web::web::ServiceConfig;
+use actix_web::web::{self, ServiceConfig};
 use shuttle_actix_web::ShuttleActixWeb;
+use sqlx::{PgPool};
 
 mod controller {
     pub mod root;
@@ -14,11 +15,19 @@ mod view {
     pub mod html;
 }
 
-pub fn run_server() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+#[derive(Clone)]
+struct AppState {
+    pool: PgPool,
+}
+
+pub fn run_server(pool: PgPool) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     let config = move |cfg: &mut ServiceConfig| {
+        let state = web::Data::new(AppState { pool });
+        
         cfg.service(controller::root::index);
         cfg.service(controller::order::index);
         cfg.service(controller::order::search);
+        cfg.app_data(state);
     };
 
     Ok(config.into())
