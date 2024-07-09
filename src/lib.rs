@@ -20,7 +20,12 @@ struct AppState {
     pool: PgPool,
 }
 
-pub fn run_server(pool: PgPool) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+pub async fn run_server(pool: PgPool) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+    sqlx::migrate!()
+        .run(&pool)
+        .await
+        .expect("Failed to run migrations");
+
     let config = move |cfg: &mut ServiceConfig| {
         let state = web::Data::new(AppState { pool });
         

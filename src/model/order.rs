@@ -1,31 +1,23 @@
 use serde::{Serialize, Deserialize};
+use sqlx::{prelude::FromRow, Pool, Postgres};
 
-#[derive(Serialize, Deserialize)]
-pub struct OrderBalance<'a> {
-    order_id: u32,
-    status: &'a str
+#[derive(Serialize, Deserialize, FromRow)]
+pub struct OrderBalance {
+    order_id: i32,
+    order_status: String
 }
 
-pub fn search_order_balance(status: &String) -> Vec<OrderBalance<'static>> {
-    get_order_balance_list()
-        .into_iter()
-        .filter(|order_balance| status == "" || order_balance.status == status)
-        .collect()
+pub async fn search_order_balance(pool: &Pool<Postgres>, status: &String) -> Vec<OrderBalance> {
+    sqlx::query_as("SELECT order_id, order_status FROM orders WHERE order_status = ?")
+        .bind(status)
+        .fetch_all(pool)
+        .await
+        .unwrap()
 }
 
-pub fn get_order_balance_list() -> Vec<OrderBalance<'static>> {
-    vec![
-        OrderBalance {
-            order_id: 3,
-            status: "未回答"
-        },
-        OrderBalance {
-            order_id: 2,
-            status: "引き当て済み"
-        },
-        OrderBalance {
-            order_id: 1,
-            status: "引き当て済み"
-        },
-    ]
+pub async fn get_order_balance_list(pool: &Pool<Postgres>) -> Vec<OrderBalance> {
+    sqlx::query_as("SELECT order_id, order_status FROM orders")
+        .fetch_all(pool)
+        .await
+        .unwrap()
 }

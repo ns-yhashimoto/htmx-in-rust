@@ -6,5 +6,5 @@ use sqlx::PgPool;
 async fn main(
     #[shuttle_shared_db::Postgres] pool: PgPool,
 ) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
-    htmx_in_rust::run_server(pool)
+    htmx_in_rust::run_server(pool).await
 }
