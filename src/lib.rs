@@ -1,6 +1,6 @@
 use actix_web::web::{self, ServiceConfig};
 use shuttle_actix_web::ShuttleActixWeb;
-use sqlx::{PgPool};
+use sqlx::PgPool;
 
 mod controller {
     pub mod root;
