@@ -3,8 +3,8 @@ use shuttle_actix_web::ShuttleActixWeb;
 use sqlx::PgPool;
 
 mod controller {
-    pub mod root;
     pub mod order;
+    pub mod root;
 }
 
 mod model {
@@ -20,7 +20,9 @@ struct AppState {
     pool: PgPool,
 }
 
-pub async fn run_server(pool: PgPool) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+pub async fn run_server(
+    pool: PgPool,
+) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
     sqlx::migrate!()
         .run(&pool)
         .await
@@ -28,7 +30,7 @@ pub async fn run_server(pool: PgPool) -> ShuttleActixWeb<impl FnOnce(&mut Servic
 
     let config = move |cfg: &mut ServiceConfig| {
         let state = web::Data::new(AppState { pool });
-        
+
         cfg.service(controller::root::index);
         cfg.service(controller::order::index);
         cfg.service(controller::order::search);
