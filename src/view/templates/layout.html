@@ -1,13 +1,9 @@
 {% macro anchor(label, path) %}
   {% if path == page %}
-    <li class="selected">
-      <a href="{{ path }}" aria-current="path">{{ label }}</a>
-    </li>
+      <a href="{{ path }}" aria-current="path" class="navbar-item is-selected">{{ label }}</a>
   {% endif %}
   {% if path != page %}
-    <li>
-      <a href="{{ path }}">{{ label }}</a>
-    </li>
+      <a href="{{ path }}" class="navbar-item">{{ label }}</a>
   {% endif %}
 {% endmacro %}
 <!doctype html>
@@ -22,16 +18,29 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
-    <link rel="stylesheet" href="https://matcha.mizu.sh/matcha.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
   </head>
   <body hx-boost="true">
-    <header>
-      <nav>
-        <menu>
-          {{ self::anchor(label='Home', path='/') }}
-          {{ self::anchor(label='受注', path='/order') }}
-          {{ self::anchor(label='Todo', path='/todo') }}
-        </menu>
+    <header class="container">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item" href="/">Sample App</a>
+            
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="navbarBasicExample" class="navbar-menu">
+          <div class="navbar-start">
+            {{ self::anchor(label='Home', path='/') }}
+            {{ self::anchor(label='受注', path='/order') }}
+            {{ self::anchor(label='Todo', path='/todo') }}
+          </div>
+        </div>
+
       </nav>
     </header>
     <main class="container">

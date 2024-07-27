@@ -16,7 +16,7 @@ pub mod todo {
         let tera = Tera::new("src/view/templates/**/*.html").unwrap();
 
         let mut ctx = Context::new();
-        ctx.insert("page", "/todos");
+        ctx.insert("page", "/todo");
         ctx.insert("todos", todos);
         tera.render("todo/index.html", &ctx).unwrap()
     }

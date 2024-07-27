@@ -1,32 +1,40 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section>
-    <header>
-        <div class="flex end">
-            <label>
-                ステータス
-                <select
-                    type="search" 
-                    name="status"
-                    hx-get="/order/search"
-                    hx-target="#order-row-wrapper">
-                    <option />
-                    <option>引き当て済み</option>
-                    <option>未回答</option>
-                </select>
-            </label>
+<div class="columns is-mobile is-centered">
+    <div class="column is-half">
+
+        <section class="section">
+            <header>
+                            <div class="field">
+                                <label class="label">ステータス</label>
+                                <div class="control">
+                                    <div class="select">
+                                            <select
+                                                type="search" 
+                                                name="status"
+                                                hx-get="/order/search"
+                                                hx-target="#order-row-wrapper">
+                                                <option />
+                                                <option>引き当て済み</option>
+                                                <option>未回答</option>
+                                            </select>
+                                    </div>
+                                </div>
+                </div>
+        
+            </header>
+            <table id="order-table" class="table">
+                <thead>
+                    <tr>
+                        <th>受注番号</th>
+                        <th>ステータス</th>
+                    </tr>
+                </thead>
+                <tbody id="order-row-wrapper">
+                    {% include "order/rows.html" %}
+                </tbody>
+            </table>
+        </section>
         </div>
-    </header>
-    <table id="order-table">
-        <thead>
-            <tr>
-                <th>受注番号</th>
-                <th>ステータス</th>
-            </tr>
-        </thead>
-        <tbody id="order-row-wrapper">
-            {% include "order/rows.html" %}
-        </tbody>
-    </table>
-</section>
+</div>
 {% endblock %}

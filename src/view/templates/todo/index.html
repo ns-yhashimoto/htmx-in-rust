@@ -1,24 +1,28 @@
 {% extends 'layout.html' %}
 {% block content %}
-<section>
-    <header>
-        <h2>Todo</h2>
-    </header>
-    <table id="todo-table">
-        <thead>
-            <tr>
-                <th>タスク</th>
-                <th>完了日時</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for todo in todos %}
-            <tr id="todo_{{ todo.id }}">
-                <td>{{ todo.content }}</td>
-                <td>{{ todo.completed_on }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</section>
+<div class="columns is-mobile is-centered">
+    <div class="column is-half">
+<article class="panel">
+    <p class="panel-heading">タスク</p>
+    <div class="panel-block">
+        <div class="field has-addons">
+            <div class="control">
+              <input class="input" type="text" placeholder="New task...">
+            </div>
+            <div class="control">
+              <button class="button is-info">
+                Register
+              </button>
+            </div>
+        </div>
+    </div>
+    {% for todo in todos %}
+    <div class="panel-block">
+        {{ todo.content }}
+        <!-- <td>{{ todo.completed_on }}</td> -->
+    </div>
+    {% endfor %}
+</article>
+</div>
+</div>
 {% endblock %}
