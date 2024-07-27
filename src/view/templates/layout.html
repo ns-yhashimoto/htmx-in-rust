@@ -1,8 +1,7 @@
 {% macro anchor(label, path) %}
   {% if path == page %}
       <a href="{{ path }}" aria-current="path" class="navbar-item is-selected">{{ label }}</a>
-  {% endif %}
-  {% if path != page %}
+  {% else %}
       <a href="{{ path }}" class="navbar-item">{{ label }}</a>
   {% endif %}
 {% endmacro %}
@@ -19,6 +18,7 @@
     ></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
   </head>
   <body hx-boost="true">
     <header class="container">

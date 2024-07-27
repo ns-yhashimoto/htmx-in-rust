@@ -37,6 +37,9 @@ pub async fn run_server(
         cfg.service(controller::order::index);
         cfg.service(controller::order::search);
         cfg.service(controller::todo::index);
+        cfg.service(controller::todo::index_post);
+        cfg.service(controller::todo::index_post_done);
+        cfg.service(controller::todo::index_delete);
         cfg.app_data(state);
     };
 

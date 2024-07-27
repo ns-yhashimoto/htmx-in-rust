@@ -2,26 +2,21 @@
 {% block content %}
 <div class="columns is-mobile is-centered">
     <div class="column is-half">
-<article class="panel">
+<article class="panel" id="todo_panel">
     <p class="panel-heading">タスク</p>
     <div class="panel-block">
-        <div class="field has-addons">
+          <form hx-post="/todo" hx-target="#todo_panel" hx-swap="beforeend" class="field has-addons">
             <div class="control">
-              <input class="input" type="text" placeholder="New task...">
+              <input class="input" type="text" name="content" placeholder="New task...">
             </div>
             <div class="control">
               <button class="button is-info">
                 Register
               </button>
             </div>
-        </div>
+          </form>
     </div>
-    {% for todo in todos %}
-    <div class="panel-block">
-        {{ todo.content }}
-        <!-- <td>{{ todo.completed_on }}</td> -->
-    </div>
-    {% endfor %}
+    {% include "todo/items.html" %}
 </article>
 </div>
 </div>

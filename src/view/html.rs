@@ -11,14 +11,32 @@ pub mod root {
 
 pub mod todo {
     use crate::model::todo::Todo;
-    use tera::{Context, Tera};
+    use tera::{Context, Result, Tera, Value};
     pub fn render_index_page(todos: &Vec<Todo>) -> String {
-        let tera = Tera::new("src/view/templates/**/*.html").unwrap();
+        let mut tera = Tera::new("src/view/templates/**/*.html").unwrap();
+        tera.register_tester("done", tester_done);
 
         let mut ctx = Context::new();
         ctx.insert("page", "/todo");
         ctx.insert("todos", todos);
         tera.render("todo/index.html", &ctx).unwrap()
+    }
+
+    pub fn render_items(todos: &Vec<Todo>) -> String {
+        let mut tera = Tera::new("src/view/templates/**/*.html").unwrap();
+        tera.register_tester("done", tester_done);
+
+        let mut ctx = Context::new();
+        ctx.insert("todos", todos);
+        tera.render("todo/items.html", &ctx).unwrap()
+    }
+
+    fn tester_done(value: Option<&Value>, _: &[Value]) -> Result<bool> {
+        match value {
+            None => Ok(false),
+            Some(Value::Null) => Ok(false),
+            Some(_) => Ok(true),
+        }
     }
 }
 

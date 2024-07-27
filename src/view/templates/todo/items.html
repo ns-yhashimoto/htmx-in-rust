@@ -1,0 +1,23 @@
+{% for todo in todos %}
+<div id="todo_{{ todo.id }}" class="panel-block">
+    {% if todo.completed_on is done %}
+        <s>{{ todo.content }}</s>
+    {% else %}
+        {{ todo.content }}
+        <a hx-post="/todo/{{ todo.id }}/done" hx-target="body">
+            <span class="icon-text has-text-info">
+            <span class="icon is-right">
+                <i class="mdi mdi-check"></i>
+            </span>
+            </span>
+        </a>
+    {% endif %}
+    <a hx-delete="/todo/{{ todo.id }}" hx-confirm="Delete this task?" hx-target="body">
+        <span class="icon-text has-text-danger">
+            <span class="icon is-right">
+                <i class="mdi mdi-delete"></i>
+            </span>
+        </span>
+    </a>
+</div>
+{% endfor %}
