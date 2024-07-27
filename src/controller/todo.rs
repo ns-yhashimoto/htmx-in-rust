@@ -2,7 +2,6 @@ use crate::model::todo;
 use crate::view::html;
 use crate::AppState;
 use actix_web::{delete, get, post, web, HttpResponse, Responder};
-use chrono::Utc;
 use serde::Deserialize;
 
 #[get("/todo")]
@@ -30,10 +29,7 @@ async fn index_post(form: web::Form<TodoCreate>, state: web::Data<AppState>) -> 
 
 #[post("/todo/{id}/done")]
 async fn index_post_done(path: web::Path<(i32,)>, state: web::Data<AppState>) -> impl Responder {
-    let mut todo = todo::get(&state.pool, &path.into_inner().0).await;
-
-    todo.completed_on = Some(Utc::now());
-    let result = todo::update(&state.pool, &todo).await;
+    let result = todo::update_as_done(&state.pool, &path.into_inner().0).await;
 
     match result {
         Ok(_) => HttpResponse::SeeOther()
