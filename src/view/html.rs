@@ -9,6 +9,19 @@ pub mod root {
     }
 }
 
+pub mod todo {
+    use crate::model::todo::Todo;
+    use tera::{Context, Tera};
+    pub fn render_index_page(todos: &Vec<Todo>) -> String {
+        let tera = Tera::new("src/view/templates/**/*.html").unwrap();
+
+        let mut ctx = Context::new();
+        ctx.insert("page", "/todos");
+        ctx.insert("todos", todos);
+        tera.render("todo/index.html", &ctx).unwrap()
+    }
+}
+
 pub mod order {
     use crate::model::order::OrderBalance;
     use tera::{Context, Tera};

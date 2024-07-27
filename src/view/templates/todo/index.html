@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block content %}
+<section>
+    <header>
+        <h2>Todo</h2>
+    </header>
+    <table id="todo-table">
+        <thead>
+            <tr>
+                <th>タスク</th>
+                <th>完了日時</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for todo in todos %}
+            <tr id="todo_{{ todo.id }}">
+                <td>{{ todo.content }}</td>
+                <td>{{ todo.completed_on }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

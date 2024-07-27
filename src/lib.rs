@@ -5,10 +5,12 @@ use sqlx::PgPool;
 mod controller {
     pub mod order;
     pub mod root;
+    pub mod todo;
 }
 
 mod model {
     pub mod order;
+    pub mod todo;
 }
 
 mod view {
@@ -34,6 +36,7 @@ pub async fn run_server(
         cfg.service(controller::root::index);
         cfg.service(controller::order::index);
         cfg.service(controller::order::search);
+        cfg.service(controller::todo::index);
         cfg.app_data(state);
     };
 
