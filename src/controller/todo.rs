@@ -32,10 +32,13 @@ async fn index_post_done(path: web::Path<(i32,)>, state: web::Data<AppState>) ->
     let result = todo::update_as_done(&state.pool, &path.into_inner().0).await;
 
     match result {
-        Ok(_) => HttpResponse::SeeOther()
-            .append_header(("Location", "/todo"))
-            .finish(),
-        Err(_) => HttpResponse::NotFound().finish(),
+        Ok(todo) => HttpResponse::Ok()
+            .content_type("text/html")
+            .body(html::todo::render_items(&vec![todo])),
+        Err(e) => {
+            println!("{}", e);
+            HttpResponse::NotFound().finish()
+        }
     }
 }
 

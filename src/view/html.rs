@@ -10,7 +10,10 @@ pub mod root {
 }
 
 pub mod todo {
+    use std::str::FromStr;
+
     use crate::model::todo::Todo;
+    use chrono::{DateTime, ParseResult, Utc};
     use tera::{Context, Result, Tera, Value};
     pub fn render_index_page(todos: &Vec<Todo>) -> String {
         let mut tera = Tera::new("src/view/templates/**/*.html").unwrap();
@@ -33,9 +36,14 @@ pub mod todo {
 
     fn tester_done(value: Option<&Value>, _: &[Value]) -> Result<bool> {
         match value {
-            None => Ok(false),
-            Some(Value::Null) => Ok(false),
-            Some(_) => Ok(true),
+            Some(Value::String(dt)) => {
+                let result: ParseResult<DateTime<Utc>> = DateTime::from_str(dt);
+                match result {
+                    Ok(parsed) => Ok(Utc::now() >= parsed),
+                    _ => Ok(false),
+                }
+            }
+            _ => Ok(false),
         }
     }
 }

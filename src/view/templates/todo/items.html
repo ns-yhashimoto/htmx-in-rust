@@ -1,10 +1,10 @@
 {% for todo in todos %}
-<div id="todo_{{ todo.id }}" class="panel-block">
+<div id="todo-{{ todo.id }}" class="panel-block">
     {% if todo.completed_on is done %}
         <s>{{ todo.content }}</s>
     {% else %}
         {{ todo.content }}
-        <a hx-post="/todo/{{ todo.id }}/done" hx-target="body">
+        <a hx-post="/todo/{{ todo.id }}/done" hx-target="#todo-{{ todo.id }}" hx-swap="outerHTML">
             <span class="icon-text has-text-info">
             <span class="icon is-right">
                 <i class="mdi mdi-check"></i>
