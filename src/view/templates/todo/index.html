@@ -1,10 +1,10 @@
 {% extends 'layout.html' %}
 {% block content %}
 <div class="columns is-mobile is-centered">
-    <div class="column is-half">
-<article class="panel" id="todo-panel">
-    <p class="panel-heading">タスク</p>
-    <div id="todo-panel-input" class="panel-block">
+  <div class="column is-half">
+    <article class="panel" id="todo-panel">
+        <p class="panel-heading">タスク</p>
+        <div id="todo-panel-input" class="panel-block">
           <form hx-post="/todo" hx-target="#todo-panel-input" hx-swap="afterend" class="field has-addons">
             <div class="control">
               <input class="input" type="text" name="content" placeholder="New task...">
@@ -15,9 +15,9 @@
               </button>
             </div>
           </form>
-    </div>
-    {% include "todo/items.html" %}
-</article>
-</div>
+        </div>
+        {% include "todo/items.html" %}
+    </article>
+  </div>
 </div>
 {% endblock %}
