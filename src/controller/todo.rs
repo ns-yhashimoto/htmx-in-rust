@@ -1,6 +1,6 @@
 use crate::model::todo;
+use crate::model::todo::TodoRepository;
 use crate::view::html;
-use crate::AppState;
 use actix_web::{
     delete, get, post,
     web::{self, ServiceConfig},
@@ -15,9 +15,11 @@ pub fn service(cfg: &mut ServiceConfig) {
         .service(index_delete);
 }
 
+type Repository = web::Data<Box<dyn TodoRepository>>;
+
 #[get("/todo")]
-async fn index(state: web::Data<AppState>) -> impl Responder {
-    let todos = todo::get_list(&state.pool).await;
+async fn index(repos: Repository) -> impl Responder {
+    let todos = todo::get_list(&repos).await;
 
     HttpResponse::Ok()
         .content_type("text/html")
@@ -30,8 +32,8 @@ struct TodoCreate {
 }
 
 #[post("/todo")]
-async fn index_post(form: web::Form<TodoCreate>, state: web::Data<AppState>) -> impl Responder {
-    let todo = todo::create(&state.pool, &form.content).await;
+async fn index_post(form: web::Form<TodoCreate>, repos: Repository) -> impl Responder {
+    let todo = todo::create(&repos, &form.content).await;
 
     HttpResponse::Ok()
         .content_type("text/html")
@@ -39,8 +41,8 @@ async fn index_post(form: web::Form<TodoCreate>, state: web::Data<AppState>) -> 
 }
 
 #[post("/todo/{id}/done")]
-async fn index_post_done(path: web::Path<(i32,)>, state: web::Data<AppState>) -> impl Responder {
-    let result = todo::update_as_done(&state.pool, &path.into_inner().0).await;
+async fn index_post_done(path: web::Path<(i32,)>, repos: Repository) -> impl Responder {
+    let result = todo::update_as_done(&repos, &path.into_inner().0).await;
 
     match result {
         Ok(todo) => HttpResponse::Ok()
@@ -54,8 +56,8 @@ async fn index_post_done(path: web::Path<(i32,)>, state: web::Data<AppState>) ->
 }
 
 #[delete("/todo/{id}")]
-async fn index_delete(path: web::Path<(i32,)>, state: web::Data<AppState>) -> impl Responder {
-    let result = todo::delete(&state.pool, &path.into_inner().0).await;
+async fn index_delete(path: web::Path<(i32,)>, repos: Repository) -> impl Responder {
+    let result = todo::delete(&repos, &path.into_inner().0).await;
 
     match result {
         Ok(_) => HttpResponse::SeeOther()

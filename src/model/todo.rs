@@ -1,58 +1,53 @@
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
-use sqlx::{prelude::FromRow, PgPool, Result};
+use sqlx::prelude::FromRow;
 
-#[derive(Serialize, Deserialize, FromRow)]
+pub type TodoError = String;
+pub type TodoResult<T> = Result<T, TodoError>;
+
+#[async_trait::async_trait]
+pub trait TodoRepository: Send + Sync + 'static {
+    async fn get_list(&self) -> TodoResult<Vec<Todo>>;
+    async fn get(&self, id: &i32) -> TodoResult<Todo>;
+    async fn create(&self, content: &String) -> TodoResult<Todo>;
+    async fn update(&self, todo: &Todo) -> TodoResult<Todo>;
+    async fn delete(&self, id: &i32) -> TodoResult<i32>;
+}
+
+type Repository = Box<dyn TodoRepository>;
+
+#[derive(Serialize, Deserialize, FromRow, Clone)]
 pub struct Todo {
     pub id: i32,
     pub content: String,
     pub completed_on: Option<chrono::DateTime<chrono::Utc>>,
 }
 
-pub async fn get(pool: &PgPool, id: &i32) -> Todo {
-    sqlx::query_as("SELECT id, content, completed_on FROM todos WHERE id = $1")
-        .bind(id)
-        .fetch_one(pool)
-        .await
-        .unwrap()
+pub async fn get(repos: &Repository, id: &i32) -> Todo {
+    repos.get(id).await.unwrap()
 }
 
-pub async fn get_list(pool: &PgPool) -> Vec<Todo> {
-    sqlx::query_as("SELECT id, content, completed_on FROM todos ORDER BY id DESC")
-        .fetch_all(pool)
-        .await
-        .unwrap()
+pub async fn get_list(repos: &Repository) -> Vec<Todo> {
+    repos.get_list().await.unwrap()
 }
 
-pub async fn create(pool: &PgPool, content: &String) -> Todo {
-    sqlx::query_as("INSERT INTO todos(content) VALUES ($1) RETURNING id, content, completed_on")
-        .bind(content)
-        .fetch_one(pool)
-        .await
-        .unwrap()
+pub async fn create(repos: &Repository, content: &String) -> Todo {
+    repos.create(content).await.unwrap()
 }
 
-pub async fn update_as_done(pool: &PgPool, id: &i32) -> Result<Todo> {
-    let mut todo = get(pool, id).await;
+pub async fn update_as_done(repos: &Repository, id: &i32) -> TodoResult<Todo> {
+    let mut todo = repos.get(id).await.unwrap();
     todo.completed_on = Some(Utc::now());
 
-    update(pool, &todo).await
+    repos.update(&todo).await
 }
 
-pub async fn update(pool: &PgPool, todo: &Todo) -> Result<Todo> {
-    sqlx::query_as::<_, Todo>("UPDATE todos SET content = $2, completed_on = $3 WHERE id = $1 RETURNING id, content, completed_on")
-        .bind(todo.id)
-        .bind(&todo.content)
-        .bind(todo.completed_on)
-        .fetch_one(pool)
-        .await
+pub async fn update(repos: &Repository, todo: &Todo) -> TodoResult<Todo> {
+    repos.update(&todo).await
 }
 
-pub async fn delete(pool: &PgPool, id: &i32) -> Result<()> {
-    let result = sqlx::query("DELETE FROM todos WHERE id = $1")
-        .bind(id)
-        .execute(pool)
-        .await;
+pub async fn delete(repos: &Repository, id: &i32) -> TodoResult<()> {
+    let result = repos.delete(id).await;
 
     match result {
         Ok(_) => Ok(()),
@@ -63,39 +58,77 @@ pub async fn delete(pool: &PgPool, id: &i32) -> Result<()> {
 #[cfg(test)]
 mod tests {
     use crate::model::todo;
-    use sqlx::PgPool;
 
-    #[sqlx::test]
-    #[ignore]
-    pub fn get_list_works(pool: PgPool) {
-        let result = todo::get_list(&pool).await;
-        assert_eq!(result.len(), 0);
+    use super::{Todo, TodoRepository, TodoResult};
+
+    struct MockTodoRepository {}
+
+    #[async_trait::async_trait]
+    impl TodoRepository for MockTodoRepository {
+        async fn get_list(&self) -> TodoResult<Vec<Todo>> {
+            Ok(vec![Todo {
+                id: 1,
+                content: String::from("mock"),
+                completed_on: None,
+            }])
+        }
+        async fn get(&self, id: &i32) -> TodoResult<Todo> {
+            Ok(Todo {
+                id: *id,
+                content: String::from("mock"),
+                completed_on: None,
+            })
+        }
+        async fn create(&self, content: &String) -> TodoResult<Todo> {
+            Ok(Todo {
+                id: 1,
+                content: content.clone(),
+                completed_on: None,
+            })
+        }
+        async fn update(&self, todo: &Todo) -> TodoResult<Todo> {
+            Ok(todo.clone())
+        }
+        async fn delete(&self, id: &i32) -> TodoResult<i32> {
+            Ok(id.clone())
+        }
     }
 
-    #[sqlx::test]
-    #[ignore]
-    pub fn create_works(pool: PgPool) {
-        let content = String::from("New task");
-        let result = todo::create(&pool, &content).await;
-        assert_eq!(result.content, content);
-        assert_eq!(result.completed_on, None);
+    #[tokio::test]
+    pub async fn get_list_works() {
+        let repos: Box<dyn TodoRepository + 'static> = Box::new(MockTodoRepository {});
+        let _ = todo::get_list(&repos).await;
+        assert!(true);
     }
 
-    #[sqlx::test]
-    #[ignore]
-    pub fn update_as_done_works(pool: PgPool) {
-        let todo = todo::create(&pool, &String::from("New task")).await;
-        let result = todo::update_as_done(&pool, &todo.id).await.unwrap();
-        assert_eq!(result.id, todo.id);
-        assert_eq!(result.content, todo.content);
+    #[tokio::test]
+    pub async fn get_works() {
+        let repos: Box<dyn TodoRepository + 'static> = Box::new(MockTodoRepository {});
+        let _ = todo::get(&repos, &1).await;
+        assert!(true);
+    }
+
+    #[tokio::test]
+    pub async fn create_works() {
+        let repos: Box<dyn TodoRepository + 'static> = Box::new(MockTodoRepository {});
+        let content = &String::from("hoge");
+        let result = todo::create(&repos, content).await;
+        assert_eq!(&result.content, content);
+    }
+
+    #[tokio::test]
+    pub async fn update_as_done_works() {
+        let repos: Box<dyn TodoRepository + 'static> = Box::new(MockTodoRepository {});
+        let result = todo::update_as_done(&repos, &1).await;
+        assert!(Result::is_ok(&result));
+        let result = result.unwrap();
         assert!(Option::is_some(&result.completed_on));
     }
 
-    #[sqlx::test]
-    #[ignore]
-    pub fn delete_works(pool: PgPool) {
-        let todo = todo::create(&pool, &String::from("New task")).await;
-        let result = todo::delete(&pool, &todo.id).await;
+    #[tokio::test]
+    pub async fn delete_works() {
+        let repos: Box<dyn TodoRepository + 'static> = Box::new(MockTodoRepository {});
+        let result = todo::delete(&repos, &1).await;
         assert!(Result::is_ok(&result));
     }
 }

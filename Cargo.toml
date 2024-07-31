@@ -12,3 +12,7 @@ shuttle-runtime = "0.46.0"
 shuttle-shared-db = { version = "0.46.0", features = ["postgres", "sqlx"] }
 sqlx = { version = "0.7.1", features = ["chrono"]}
 chrono = { version = "0.4.38", features = ["serde"] }
+async-trait = "0.1.81"
+
+[dev-dependencies]
+tokio = "1.39.2"
