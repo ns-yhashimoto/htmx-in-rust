@@ -3,27 +3,15 @@ use repository::postgres_todo_repository::PostgresTodoRepository;
 use shuttle_actix_web::ShuttleActixWeb;
 use sqlx::PgPool;
 
-mod controller {
-    pub mod order;
-    pub mod root;
-    pub mod todo;
-}
-
-mod model {
-    pub mod order;
-    pub mod todo;
-}
-
-mod view {
-    pub mod html;
-}
+mod controller;
+mod model;
+mod repository;
+mod view;
 
 #[derive(Clone)]
 struct AppState {
     pool: PgPool,
 }
-
-mod repository;
 
 pub async fn run_server(
     pool: PgPool,
