@@ -1,8 +1,19 @@
 use crate::model::todo;
 use crate::view::html;
 use crate::AppState;
-use actix_web::{delete, get, post, web, HttpResponse, Responder};
+use actix_web::{
+    delete, get, post,
+    web::{self, ServiceConfig},
+    HttpResponse, Responder,
+};
 use serde::Deserialize;
+
+pub fn service(cfg: &mut ServiceConfig) {
+    cfg.service(index)
+        .service(index_post)
+        .service(index_post_done)
+        .service(index_delete);
+}
 
 #[get("/todo")]
 async fn index(state: web::Data<AppState>) -> impl Responder {
