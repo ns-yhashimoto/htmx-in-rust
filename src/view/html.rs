@@ -13,8 +13,9 @@ pub mod todo {
     use std::str::FromStr;
 
     use crate::model::todo::Todo;
-    use chrono::{DateTime, ParseResult, Utc};
+    use chrono::{DateTime, Utc};
     use tera::{Context, Result, Tera, Value};
+
     pub fn render_index_page(todos: &Vec<Todo>) -> String {
         let mut tera = Tera::new("src/view/templates/**/*.html").unwrap();
         tera.register_tester("done", tester_done);
@@ -36,14 +37,54 @@ pub mod todo {
 
     fn tester_done(value: Option<&Value>, _: &[Value]) -> Result<bool> {
         match value {
-            Some(Value::String(dt)) => {
-                let result: ParseResult<DateTime<Utc>> = DateTime::from_str(dt);
-                match result {
-                    Ok(parsed) => Ok(Utc::now() >= parsed),
-                    _ => Ok(false),
-                }
-            }
+            Some(Value::String(dt)) => match DateTime::<Utc>::from_str(dt) {
+                Ok(parsed) => Ok(Utc::now() >= parsed),
+                _ => Ok(false),
+            },
             _ => Ok(false),
+        }
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use crate::{model::todo, view};
+
+        #[test]
+        fn render_index_page_works() {
+            let todos: Vec<todo::Todo> = vec![
+                todo::Todo {
+                    id: 1,
+                    content: String::from("task 1"),
+                    completed_on: None,
+                },
+                todo::Todo {
+                    id: 2,
+                    content: String::from("task 2"),
+                    completed_on: Some(chrono::Utc::now()),
+                },
+            ];
+
+            let _ = view::html::todo::render_index_page(&todos);
+            assert!(true);
+        }
+
+        #[test]
+        fn render_items_works() {
+            let todos: Vec<todo::Todo> = vec![
+                todo::Todo {
+                    id: 1,
+                    content: String::from("task 1"),
+                    completed_on: None,
+                },
+                todo::Todo {
+                    id: 2,
+                    content: String::from("task 2"),
+                    completed_on: Some(chrono::Utc::now()),
+                },
+            ];
+
+            let _ = view::html::todo::render_items(&todos);
+            assert!(true);
         }
     }
 }

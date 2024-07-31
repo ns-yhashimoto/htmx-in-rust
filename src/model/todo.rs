@@ -59,3 +59,43 @@ pub async fn delete(pool: &PgPool, id: &i32) -> Result<()> {
         Err(e) => Err(e),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::model::todo;
+    use sqlx::PgPool;
+
+    #[sqlx::test]
+    #[ignore]
+    pub fn get_list_works(pool: PgPool) {
+        let result = todo::get_list(&pool).await;
+        assert_eq!(result.len(), 0);
+    }
+
+    #[sqlx::test]
+    #[ignore]
+    pub fn create_works(pool: PgPool) {
+        let content = String::from("New task");
+        let result = todo::create(&pool, &content).await;
+        assert_eq!(result.content, content);
+        assert_eq!(result.completed_on, None);
+    }
+
+    #[sqlx::test]
+    #[ignore]
+    pub fn update_as_done_works(pool: PgPool) {
+        let todo = todo::create(&pool, &String::from("New task")).await;
+        let result = todo::update_as_done(&pool, &todo.id).await.unwrap();
+        assert_eq!(result.id, todo.id);
+        assert_eq!(result.content, todo.content);
+        assert!(Option::is_some(&result.completed_on));
+    }
+
+    #[sqlx::test]
+    #[ignore]
+    pub fn delete_works(pool: PgPool) {
+        let todo = todo::create(&pool, &String::from("New task")).await;
+        let result = todo::delete(&pool, &todo.id).await;
+        assert!(Result::is_ok(&result));
+    }
+}
