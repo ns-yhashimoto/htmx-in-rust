@@ -26,8 +26,7 @@ pub async fn run_server(
         let state = web::Data::new(AppState { pool });
 
         cfg.service(controller::root::index);
-        cfg.service(controller::order::index);
-        cfg.service(controller::order::search);
+        cfg.configure(controller::order::service);
         cfg.configure(controller::todo::service::<PostgresTodoRepository>);
         cfg.app_data(todo_repository);
         cfg.app_data(state);

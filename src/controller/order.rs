@@ -1,10 +1,20 @@
 use crate::model::order;
 use crate::view::html;
 use crate::AppState;
-use actix_web::{get, web, HttpResponse, Responder};
+use actix_web::{
+    web::{self, ServiceConfig},
+    HttpResponse, Responder,
+};
 use serde::Deserialize;
 
-#[get("/order")]
+pub fn service(cfg: &mut ServiceConfig) {
+    cfg.service(
+        web::scope("/order")
+            .route("", web::get().to(index))
+            .route("/search", web::get().to(search)),
+    );
+}
+
 async fn index(state: web::Data<AppState>) -> impl Responder {
     let orders = order::get_order_balance_list(&state.pool).await;
 
@@ -18,7 +28,6 @@ struct SearchQuery {
     status: String,
 }
 
-#[get("/order/search")]
 async fn search(query: web::Query<SearchQuery>, state: web::Data<AppState>) -> impl Responder {
     let orders = if &query.status != "" {
         order::search_order_balance(&state.pool, &query.status).await
