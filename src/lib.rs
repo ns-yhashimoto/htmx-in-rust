@@ -1,5 +1,4 @@
 use actix_web::web::{self, ServiceConfig};
-use model::todo::TodoRepository;
 use repository::postgres_todo_repository::PostgresTodoRepository;
 use shuttle_actix_web::ShuttleActixWeb;
 use sqlx::PgPool;
@@ -35,14 +34,13 @@ pub async fn run_server(
         .expect("Failed to run migrations");
 
     let config = move |cfg: &mut ServiceConfig| {
-        let todo_repository: web::Data<Box<dyn TodoRepository>> =
-            web::Data::new(Box::new(PostgresTodoRepository::new(pool.clone())));
+        let todo_repository = web::Data::new(PostgresTodoRepository::new(pool.clone()));
         let state = web::Data::new(AppState { pool });
 
         cfg.service(controller::root::index);
         cfg.service(controller::order::index);
         cfg.service(controller::order::search);
-        cfg.configure(controller::todo::service);
+        cfg.configure(controller::todo::service::<PostgresTodoRepository>);
         cfg.app_data(todo_repository);
         cfg.app_data(state);
     };
