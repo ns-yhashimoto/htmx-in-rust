@@ -1,4 +1,4 @@
-use crate::view::html;
+use view::html;
 use actix_web::{get, HttpResponse, Responder};
 
 #[get("/")]

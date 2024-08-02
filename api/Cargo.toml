@@ -1,0 +1,13 @@
+[package]
+name = "api"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+controller = { workspace = true }
+repository = { workspace = true }
+actix-web = { workspace = true }
+sqlx = { workspace = true }
+shuttle-actix-web = "0.47.0"
+shuttle-runtime = "0.47.0"
+shuttle-shared-db = { version = "0.47.0", features = ["postgres", "sqlx"] }

@@ -50,7 +50,8 @@ pub async fn delete(repos: &impl TodoRepository, id: &i32) -> TodoResult<i32> {
 
 #[cfg(test)]
 mod tests {
-    use crate::model::todo;
+
+    use crate::todo;
 
     use super::{Todo, TodoRepository, TodoResult};
 

@@ -1,22 +1,14 @@
 use actix_web::web::{self, ServiceConfig};
+use controller::AppState;
 use repository::postgres_todo_repository::PostgresTodoRepository;
 use shuttle_actix_web::ShuttleActixWeb;
 use sqlx::PgPool;
 
-mod controller;
-mod model;
-mod repository;
-mod view;
-
-#[derive(Clone)]
-struct AppState {
-    pool: PgPool,
-}
-
-pub async fn run_server(
-    pool: PgPool,
+#[shuttle_runtime::main]
+async fn main(
+    #[shuttle_shared_db::Postgres] pool: PgPool,
 ) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
-    sqlx::migrate!()
+    sqlx::migrate!("../migrations")
         .run(&pool)
         .await
         .expect("Failed to run migrations");

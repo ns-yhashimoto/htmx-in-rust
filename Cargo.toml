@@ -1,18 +1,21 @@
-[package]
-name = "htmx-in-rust"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+members = [
+    "api"
+,   "controller"
+,   "model"
+,   "repository"
+,   "view"
+]
+resolver = "2"
 
-[dependencies]
-actix-web = "4"
-tera = "1"
-serde = { version = "1.0", features = ["derive"] }
-shuttle-actix-web = "0.47.0"
-shuttle-runtime = "0.47.0"
-shuttle-shared-db = { version = "0.47.0", features = ["postgres", "sqlx"] }
-sqlx = { version = "0.7.1", features = ["chrono"]}
+[workspace.dependencies]
+model = { version = "0.1.0", path = "model" }
+view = { version = "0.1.0", path = "view" }
+controller = { version = "0.1.0", path = "controller" }
+repository = { version = "0.1.0", path = "repository" }
+sqlx = { version = "0.7.1", features = ["chrono", "postgres"]}
 chrono = { version = "0.4.38", features = ["serde"] }
+serde = { version = "1.0", features = ["derive"] }
 async-trait = "0.1.81"
-
-[dev-dependencies]
 tokio = "1.39.2"
+actix-web = "4"

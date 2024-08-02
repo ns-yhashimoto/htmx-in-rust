@@ -1,11 +1,11 @@
-use crate::model::order;
-use crate::view::html;
-use crate::AppState;
+use super::AppState;
 use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
 };
+use model::order;
 use serde::Deserialize;
+use view::html;
 
 pub fn service(cfg: &mut ServiceConfig) {
     cfg.service(

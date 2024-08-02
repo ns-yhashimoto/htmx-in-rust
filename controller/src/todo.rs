@@ -1,6 +1,6 @@
-use crate::model::todo;
-use crate::model::todo::TodoRepository;
-use crate::view::html;
+use model::todo;
+use model::todo::TodoRepository;
+use view::html;
 use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
