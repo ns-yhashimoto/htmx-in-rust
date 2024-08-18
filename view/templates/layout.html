@@ -1,8 +1,8 @@
 {% macro anchor(label, path) %}
   {% if path == page %}
-      <a href="{{ path }}" aria-current="path" class="navbar-item is-selected">{{ label }}</a>
+      <a href="{{ path }}" aria-current="path" class="navbar-item is-selected" _="on click remove .is-active from #nav-bar-menu">{{ label }}</a>
   {% else %}
-      <a href="{{ path }}" class="navbar-item">{{ label }}</a>
+      <a href="{{ path }}" class="navbar-item" _="on click remove .is-active from #nav-bar-menu">{{ label }}</a>
   {% endif %}
 {% endmacro %}
 <!doctype html>
@@ -21,29 +21,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
   </head>
   <body hx-boost="true">
-    <header class="container">
-      <nav class="navbar" role="navigation" aria-label="main navigation">
+    <header>
+      <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
-          <a class="navbar-item" href="/">Sample App</a>
+          <a class="navbar-item has-text-weight-bold" href="/">Sample App</a>
             
-          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+            _="on click toggle .is-active on #nav-bar-menu then toggle .is-active on me"
+          >
+            <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
           </a>
         </div>
 
-        <div id="navbarBasicExample" class="navbar-menu">
+        <div id="nav-bar-menu" class="navbar-menu">
           <div class="navbar-start">
             {{ self::anchor(label='Home', path='/') }}
             {{ self::anchor(label='受注', path='/order') }}
             {{ self::anchor(label='Todo', path='/todo') }}
           </div>
         </div>
-
       </nav>
     </header>
-    <main class="container">
+    <main class="container my-4">
       {% block content %}
       {% endblock %}
     </main>
