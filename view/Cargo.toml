@@ -1,9 +1,0 @@
-[package]
-name = "view"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-model = { workspace = true }
-chrono = { workspace = true }
-tera = "1"

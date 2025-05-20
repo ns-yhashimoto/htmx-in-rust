@@ -2,9 +2,9 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
 };
-use model::order::{self, OrderRepository};
+use crate::model::{self, OrderRepository};
 use serde::Deserialize;
-use view::html;
+use crate::view::html;
 
 pub fn service<R: OrderRepository>(cfg: &mut ServiceConfig) {
     cfg.service(
