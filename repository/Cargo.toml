@@ -1,9 +1,0 @@
-[package]
-name = "repository"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-model = { workspace = true }
-sqlx = { workspace = true }
-async-trait = { workspace = true }

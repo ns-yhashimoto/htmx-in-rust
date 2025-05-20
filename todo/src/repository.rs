@@ -1,4 +1,4 @@
-use model::todo::{Todo, TodoRepository, TodoResult};
+use crate::model::{Todo, TodoRepository, TodoResult};
 
 pub struct PostgresTodoRepository {
     pool: sqlx::PgPool,

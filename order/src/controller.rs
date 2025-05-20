@@ -2,9 +2,9 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
 };
-use model::order::{self, OrderRepository};
+use crate::model::{self as model, OrderRepository};
 use serde::Deserialize;
-use view::html;
+use crate::view::html;
 
 pub fn service<R: OrderRepository>(cfg: &mut ServiceConfig) {
     cfg.service(
@@ -15,11 +15,11 @@ pub fn service<R: OrderRepository>(cfg: &mut ServiceConfig) {
 }
 
 async fn index<R: OrderRepository>(repos: web::Data<R>) -> impl Responder {
-    let orders = order::get_order_balance_list(repos.as_ref()).await.unwrap();
+    let orders = model::get_order_balance_list(repos.as_ref()).await.unwrap();
 
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::order::render_index_page(&orders))
+        .body(html::render_index_page(&orders))
 }
 
 #[derive(Deserialize)]
@@ -32,14 +32,14 @@ async fn search<R: OrderRepository>(
     repos: web::Data<R>,
 ) -> impl Responder {
     let orders = if &query.status != "" {
-        order::search_order_balance(repos.as_ref(), &query.status)
+        model::search_order_balance(repos.as_ref(), &query.status)
             .await
             .unwrap()
     } else {
-        order::get_order_balance_list(repos.as_ref()).await.unwrap()
+        model::get_order_balance_list(repos.as_ref()).await.unwrap()
     };
 
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::order::render_order_rows(&orders))
+        .body(html::render_order_rows(&orders))
 }

@@ -1,0 +1,53 @@
+{% macro anchor(label, path) %}
+  {% if path == page %}
+      <a href="{{ path }}" aria-current="path" class="navbar-item is-selected" _="on click remove .is-active from #nav-bar-menu">{{ label }}</a>
+  {% else %}
+      <a href="{{ path }}" class="navbar-item" _="on click remove .is-active from #nav-bar-menu">{{ label }}</a>
+  {% endif %}
+{% endmacro %}
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test app</title>
+   <script
+      src="https://unpkg.com/htmx.org@1.9.12"
+      integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+  </head>
+  <body hx-boost="true">
+    <header>
+      <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <a class="navbar-item has-text-weight-bold" href="/">Sample App</a>
+            
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false"
+            _="on click toggle .is-active on #nav-bar-menu then toggle .is-active on me"
+          >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div id="nav-bar-menu" class="navbar-menu">
+          <div class="navbar-start">
+            {{ self::anchor(label='Home', path='/') }}
+            {{ self::anchor(label='受注', path='/order') }}
+            {{ self::anchor(label='Todo', path='/todo') }}
+          </div>
+        </div>
+      </nav>
+    </header>
+    <main class="container my-4">
+      {% block content %}
+      {% endblock %}
+    </main>
+  </body>
+</html>

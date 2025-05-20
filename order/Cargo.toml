@@ -1,0 +1,15 @@
+[package]
+name = "order"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+chrono = { workspace = true }
+serde = { workspace = true }
+sqlx = { workspace = true }
+async-trait = { workspace = true }
+actix-web = { workspace = true }
+tera = "1"
+
+[dev-dependencies]
+tokio = { workspace = true }
