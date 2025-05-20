@@ -25,7 +25,7 @@ pub mod todo {
     use std::str::FromStr;
 
     use chrono::{DateTime, Utc};
-    use model::todo::Todo;
+    use todo::model::Todo;
     use tera::{Context, Result, Tera, Value};
 
     use super::get_template_path;
@@ -61,7 +61,7 @@ pub mod todo {
 
     #[cfg(test)]
     mod tests {
-        use model::todo;
+        use todo::model as todo;
 
         use crate::html;
 
@@ -106,7 +106,7 @@ pub mod todo {
 }
 
 pub mod order {
-    use model::order::OrderBalance;
+    use order::model::OrderBalance;
     use tera::{Context, Tera};
 
     use super::get_template_path;

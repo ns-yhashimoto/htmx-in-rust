@@ -1,8 +1,10 @@
 use actix_web::web::{self, ServiceConfig};
-use repository::postgres_order_repository::PostgresOrderRepository;
-use repository::postgres_todo_repository::PostgresTodoRepository;
+use order::repository::PostgresOrderRepository;
+use todo::repository::PostgresTodoRepository;
 use shuttle_actix_web::ShuttleActixWeb;
 use sqlx::PgPool;
+
+mod root;
 
 #[shuttle_runtime::main]
 async fn main(
@@ -17,9 +19,9 @@ async fn main(
         let todo_repository = web::Data::new(PostgresTodoRepository::new(pool.clone()));
         let order_repository = web::Data::new(PostgresOrderRepository::new(pool.clone()));
 
-        cfg.service(controller::root::index);
-        cfg.configure(controller::order::service::<PostgresOrderRepository>);
-        cfg.configure(controller::todo::service::<PostgresTodoRepository>);
+        cfg.service(crate::root::index);
+        cfg.configure(order::controller::service::<PostgresOrderRepository>);
+        cfg.configure(todo::controller::service::<PostgresTodoRepository>);
         cfg.app_data(todo_repository);
         cfg.app_data(order_repository);
     };

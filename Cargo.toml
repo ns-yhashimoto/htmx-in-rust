@@ -1,18 +1,16 @@
 [workspace]
 members = [
-    "api"
-,   "controller"
-,   "model"
-,   "repository"
-,   "view"
+    "api",
+    "view",
+    "todo",
+    "order"
 ]
 resolver = "2"
 
 [workspace.dependencies]
-model = { path = "model" }
 view = { path = "view" }
-controller = { path = "controller" }
-repository = { path = "repository" }
+todo = { path = "todo" }
+order = { path = "order" }
 sqlx = { version = "0.8.2", features = ["chrono", "postgres"]}
 chrono = { version = "0.4.38", features = ["serde"] }
 serde = { version = "1.0", features = ["derive"] }

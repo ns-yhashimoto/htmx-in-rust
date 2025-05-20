@@ -1,5 +1,5 @@
-use view::html;
 use actix_web::{get, HttpResponse, Responder};
+use view::html;
 
 #[get("/")]
 async fn index() -> impl Responder {
@@ -7,3 +7,5 @@ async fn index() -> impl Responder {
         .content_type("text/html")
         .body(html::root::render_index_page())
 }
+
+pub use index;

@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-model = { workspace = true }
+todo = { workspace = true }
+order = { workspace = true }
 chrono = { workspace = true }
 tera = "1"

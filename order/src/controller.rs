@@ -2,7 +2,7 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
 };
-use model::order::{self, OrderRepository};
+use crate::model::{self as order, OrderRepository};
 use serde::Deserialize;
 use view::html;
 
