@@ -1,11 +1,11 @@
 [package]
-name = "controller"
+name = "order"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-model = { workspace = true }
-view = { workspace = true }
-actix-web = { workspace = true }
+async-trait = { workspace = true }
 serde = { workspace = true }
 sqlx = { workspace = true }
+actix-web = { workspace = true }
+view = { workspace = true }

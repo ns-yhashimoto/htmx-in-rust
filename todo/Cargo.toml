@@ -1,0 +1,13 @@
+[package]
+name = "todo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-trait = { workspace = true }
+chrono = { workspace = true }
+serde = { workspace = true }
+sqlx = { workspace = true }
+actix-web = { workspace = true }
+view = { workspace = true }
+tokio = { workspace = true }
