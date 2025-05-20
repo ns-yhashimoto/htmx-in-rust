@@ -1,5 +1,5 @@
 use actix_web::web::{self, ServiceConfig};
-use controller::AppState;
+use repository::postgres_order_repository::PostgresOrderRepository;
 use repository::postgres_todo_repository::PostgresTodoRepository;
 use shuttle_actix_web::ShuttleActixWeb;
 use sqlx::PgPool;
@@ -15,13 +15,13 @@ async fn main(
 
     let config = move |cfg: &mut ServiceConfig| {
         let todo_repository = web::Data::new(PostgresTodoRepository::new(pool.clone()));
-        let state = web::Data::new(AppState { pool });
+        let order_repository = web::Data::new(PostgresOrderRepository::new(pool.clone()));
 
         cfg.service(controller::root::index);
-        cfg.configure(controller::order::service);
+        cfg.configure(controller::order::service::<PostgresOrderRepository>);
         cfg.configure(controller::todo::service::<PostgresTodoRepository>);
         cfg.app_data(todo_repository);
-        cfg.app_data(state);
+        cfg.app_data(order_repository);
     };
 
     Ok(config.into())

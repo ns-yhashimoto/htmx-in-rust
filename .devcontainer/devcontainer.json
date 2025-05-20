@@ -23,7 +23,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "curl -sSfL https://www.shuttle.dev/install | bash"
+	"postCreateCommand": "cargo install cargo-shuttle"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

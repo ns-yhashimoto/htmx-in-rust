@@ -6,7 +6,6 @@ edition = "2021"
 [dependencies]
 model = { workspace = true }
 view = { workspace = true }
-repository = { workspace = true }
 actix-web = { workspace = true }
 serde = { workspace = true }
 sqlx = { workspace = true }
