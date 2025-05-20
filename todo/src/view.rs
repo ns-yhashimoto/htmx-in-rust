@@ -1,33 +1,19 @@
 pub fn get_template_path(target: &str) -> String {
     let cd = std::env::current_dir().unwrap();
-    let base_path = if cd.ends_with("view") {
+    let base_path = if cd.ends_with("todo") {
         "templates"
     } else {
-        "view/templates"
+        "todo/templates"
     };
     format!("{}/{}", base_path, target)
 }
 
-pub mod root {
-    use tera::{Context, Tera};
-
-    use crate::html::get_template_path;
-    pub fn render_index_page() -> String {
-        let tera = Tera::new(&get_template_path("*.html")).unwrap();
-
-        let mut ctx = Context::new();
-        ctx.insert("page", "/");
-        tera.render("index.html", &ctx).unwrap()
-    }
-}
-
-pub mod todo {
-    use std::str::FromStr;
-
-    use chrono::{DateTime, Utc};
-    use model::todo::Todo;
+pub mod html {
     use tera::{Context, Result, Tera, Value};
+    use std::str::FromStr;
+    use chrono::{DateTime, Utc};
 
+    use crate::model::Todo;
     use super::get_template_path;
 
     pub fn render_index_page(todos: &Vec<Todo>) -> String {
@@ -61,69 +47,45 @@ pub mod todo {
 
     #[cfg(test)]
     mod tests {
-        use model::todo;
-
-        use crate::html;
+        use super::super::html;
+        use crate::model;
 
         #[test]
         fn render_index_page_works() {
-            let todos: Vec<todo::Todo> = vec![
-                todo::Todo {
+            let todos: Vec<model::Todo> = vec![
+                model::Todo {
                     id: 1,
                     content: String::from("task 1"),
                     completed_on: None,
                 },
-                todo::Todo {
+                model::Todo {
                     id: 2,
                     content: String::from("task 2"),
                     completed_on: Some(chrono::Utc::now()),
                 },
             ];
 
-            let _ = html::todo::render_index_page(&todos);
+            let _ = html::render_index_page(&todos);
             assert!(true);
         }
 
         #[test]
         fn render_items_works() {
-            let todos: Vec<todo::Todo> = vec![
-                todo::Todo {
+            let todos: Vec<model::Todo> = vec![
+                model::Todo {
                     id: 1,
                     content: String::from("task 1"),
                     completed_on: None,
                 },
-                todo::Todo {
+                model::Todo {
                     id: 2,
                     content: String::from("task 2"),
                     completed_on: Some(chrono::Utc::now()),
                 },
             ];
 
-            let _ = html::todo::render_items(&todos);
+            let _ = html::render_items(&todos);
             assert!(true);
         }
-    }
-}
-
-pub mod order {
-    use model::order::OrderBalance;
-    use tera::{Context, Tera};
-
-    use super::get_template_path;
-    pub fn render_index_page(orders: &Vec<OrderBalance>) -> String {
-        let tera = Tera::new(&&get_template_path("**/*.html")).unwrap();
-
-        let mut ctx = Context::new();
-        ctx.insert("page", "/order");
-        ctx.insert("orders", orders);
-        tera.render("order/index.html", &ctx).unwrap()
-    }
-
-    pub fn render_order_rows(orders: &Vec<OrderBalance>) -> String {
-        let tera = Tera::new(&get_template_path("**/*.html")).unwrap();
-
-        let mut ctx = Context::new();
-        ctx.insert("orders", orders);
-        tera.render("order/rows.html", &ctx).unwrap()
     }
 }

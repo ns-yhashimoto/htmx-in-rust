@@ -2,10 +2,10 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
 };
-use model::todo;
-use model::todo::TodoRepository;
+use crate::model as todo;
+use crate::model::TodoRepository;
 use serde::Deserialize;
-use view::html;
+use crate::view::html;
 
 pub fn service<R: TodoRepository>(cfg: &mut ServiceConfig) {
     cfg.service(
@@ -22,7 +22,7 @@ async fn index<R: TodoRepository>(repos: web::Data<R>) -> impl Responder {
 
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::todo::render_index_page(&todos))
+        .body(html::render_index_page(&todos))
 }
 
 #[derive(Deserialize)]
@@ -38,7 +38,7 @@ async fn index_post<R: TodoRepository>(
 
     HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::todo::render_items(&vec![todo]))
+        .body(html::render_items(&vec![todo]))
 }
 
 async fn index_post_done<R: TodoRepository>(
@@ -50,7 +50,7 @@ async fn index_post_done<R: TodoRepository>(
     match result {
         Ok(todo) => HttpResponse::Ok()
             .content_type("text/html")
-            .body(html::todo::render_items(&vec![todo])),
+            .body(html::render_items(&vec![todo])),
         Err(e) => {
             println!("{}", e);
             HttpResponse::NotFound().finish()
