@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-controller = { workspace = true }
-repository = { workspace = true }
+order = { workspace = true }
+todo = { workspace = true }
 actix-web = { workspace = true }
 sqlx = { workspace = true }
 shuttle-actix-web = "0.54.0"

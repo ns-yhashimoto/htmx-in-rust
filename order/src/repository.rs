@@ -1,4 +1,4 @@
-use model::order::{OrderBalance, OrderRepository, OrderResult};
+use crate::model::{OrderBalance, OrderRepository, OrderResult};
 
 pub struct PostgresOrderRepository {
     pool: sqlx::PgPool,

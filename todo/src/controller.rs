@@ -2,10 +2,10 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder,
 };
-use model::todo;
-use model::todo::TodoRepository;
+use crate::model as todo;
+use crate::model::TodoRepository;
 use serde::Deserialize;
-use view::html;
+use crate::view::html;
 
 pub fn service<R: TodoRepository>(cfg: &mut ServiceConfig) {
     cfg.service(
