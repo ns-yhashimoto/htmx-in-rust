@@ -21,20 +21,20 @@ pub struct Todo {
     pub completed_on: Option<chrono::DateTime<chrono::Utc>>,
 }
 
-pub async fn get(repos: &impl TodoRepository, id: &i32) -> Todo {
-    repos.get(id).await.unwrap()
+pub async fn get(repos: &impl TodoRepository, id: &i32) -> TodoResult<Todo> {
+    repos.get(id).await
 }
 
-pub async fn get_list(repos: &impl TodoRepository) -> Vec<Todo> {
-    repos.get_list().await.unwrap()
+pub async fn get_list(repos: &impl TodoRepository) -> TodoResult<Vec<Todo>> {
+    repos.get_list().await
 }
 
-pub async fn create(repos: &impl TodoRepository, content: &String) -> Todo {
-    repos.create(content).await.unwrap()
+pub async fn create(repos: &impl TodoRepository, content: &String) -> TodoResult<Todo> {
+    repos.create(content).await
 }
 
 pub async fn update_as_done(repos: &impl TodoRepository, id: &i32) -> TodoResult<Todo> {
-    let mut todo = repos.get(id).await.unwrap();
+    let mut todo = repos.get(id).await?;
     todo.completed_on = Some(Utc::now());
 
     repos.update(&todo).await
@@ -91,22 +91,22 @@ mod tests {
     #[tokio::test]
     pub async fn get_list_works() {
         let repos = MockTodoRepository {};
-        let _ = todo::get_list(&repos).await;
-        assert!(true);
+        let result = todo::get_list(&repos).await;
+        assert!(result.is_ok());
     }
 
     #[tokio::test]
     pub async fn get_works() {
         let repos = MockTodoRepository {};
-        let _ = todo::get(&repos, &1).await;
-        assert!(true);
+        let result = todo::get(&repos, &1).await;
+        assert!(result.is_ok());
     }
 
     #[tokio::test]
     pub async fn create_works() {
         let repos = MockTodoRepository {};
         let content = &String::from("hoge");
-        let result = todo::create(&repos, content).await;
+        let result = todo::create(&repos, content).await.unwrap();
         assert_eq!(&result.content, content);
     }
 
@@ -114,7 +114,7 @@ mod tests {
     pub async fn update_as_done_works() {
         let repos = MockTodoRepository {};
         let result = todo::update_as_done(&repos, &1).await;
-        assert!(Result::is_ok(&result));
+        assert!(result.is_ok());
         let result = result.unwrap();
         assert!(Option::is_some(&result.completed_on));
     }

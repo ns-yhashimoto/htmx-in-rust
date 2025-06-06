@@ -18,11 +18,12 @@ pub fn service<R: TodoRepository>(cfg: &mut ServiceConfig) {
 }
 
 async fn index<R: TodoRepository>(repos: web::Data<R>) -> impl Responder {
-    let todos = todo::get_list(repos.get_ref()).await;
-
-    HttpResponse::Ok()
-        .content_type("text/html")
-        .body(html::todo::render_index_page(&todos))
+    match todo::get_list(repos.get_ref()).await {
+        Ok(todos) => HttpResponse::Ok()
+            .content_type("text/html")
+            .body(html::todo::render_index_page(&todos)),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
 }
 
 #[derive(Deserialize)]
@@ -34,11 +35,12 @@ async fn index_post<R: TodoRepository>(
     form: web::Form<TodoCreate>,
     repos: web::Data<R>,
 ) -> impl Responder {
-    let todo = todo::create(repos.as_ref(), &form.content).await;
-
-    HttpResponse::Ok()
-        .content_type("text/html")
-        .body(html::todo::render_items(&vec![todo]))
+    match todo::create(repos.as_ref(), &form.content).await {
+        Ok(todo) => HttpResponse::Ok()
+            .content_type("text/html")
+            .body(html::todo::render_items(&vec![todo])),
+        Err(_) => HttpResponse::InternalServerError().finish(),
+    }
 }
 
 async fn index_post_done<R: TodoRepository>(
