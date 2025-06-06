@@ -1,6 +1,6 @@
 use actix_web::{
     web::{self, ServiceConfig},
-    HttpResponse, Responder,
+    HttpResponse,
 };
 use model::order::{self, OrderRepository};
 use serde::Deserialize;
@@ -14,12 +14,14 @@ pub fn service<R: OrderRepository>(cfg: &mut ServiceConfig) {
     );
 }
 
-async fn index<R: OrderRepository>(repos: web::Data<R>) -> impl Responder {
-    let orders = order::get_order_balance_list(repos.as_ref()).await.unwrap();
+async fn index<R: OrderRepository>(repos: web::Data<R>) -> actix_web::Result<HttpResponse> {
+    let orders = order::get_order_balance_list(repos.as_ref())
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
 
-    HttpResponse::Ok()
+    Ok(HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::order::render_index_page(&orders))
+        .body(html::order::render_index_page(&orders)))
 }
 
 #[derive(Deserialize)]
@@ -30,16 +32,18 @@ struct SearchQuery {
 async fn search<R: OrderRepository>(
     query: web::Query<SearchQuery>,
     repos: web::Data<R>,
-) -> impl Responder {
+) -> actix_web::Result<HttpResponse> {
     let orders = if &query.status != "" {
         order::search_order_balance(repos.as_ref(), &query.status)
             .await
-            .unwrap()
+            .map_err(actix_web::error::ErrorInternalServerError)?
     } else {
-        order::get_order_balance_list(repos.as_ref()).await.unwrap()
+        order::get_order_balance_list(repos.as_ref())
+            .await
+            .map_err(actix_web::error::ErrorInternalServerError)?
     };
 
-    HttpResponse::Ok()
+    Ok(HttpResponse::Ok()
         .content_type("text/html")
-        .body(html::order::render_order_rows(&orders))
+        .body(html::order::render_order_rows(&orders)))
 }
